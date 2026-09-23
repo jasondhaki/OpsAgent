@@ -10,10 +10,12 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/database.types.ts",
-    "kb": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/kb.mts"
+    "kb": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/kb.mts",
+    "eval": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx evals/run.mts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.77",
+    "@ai-sdk/groq": "^4.0.46",
     "@base-ui/react": "^1.8.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.0",

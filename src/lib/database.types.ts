@@ -117,6 +117,7 @@ export type Database = {
           groundedness: Json | null
           id: string
           language: string | null
+          meta: Json
           org_id: string
           ticket_id: string
           validator: Json | null
@@ -131,6 +132,7 @@ export type Database = {
           groundedness?: Json | null
           id?: string
           language?: string | null
+          meta?: Json
           org_id: string
           ticket_id: string
           validator?: Json | null
@@ -145,6 +147,7 @@ export type Database = {
           groundedness?: Json | null
           id?: string
           language?: string | null
+          meta?: Json
           org_id?: string
           ticket_id?: string
           validator?: Json | null
