@@ -61,7 +61,7 @@ async function load(slug: string, dir: string) {
     }
   }
   if (!jobIds.length) return;
-  await runJobs(db, jobHandlers(db, embedder), { budgetMs: 120_000, batch: 1 });
+  await runJobs(db, jobHandlers({ db, embedder }), { budgetMs: 120_000, batch: 1 });
   const { data: jobs } = await db.from('jobs').select('status, last_error, payload').in('id', jobIds);
   for (const j of jobs ?? []) if (j.status !== 'done') console.log(`FAILED    ${JSON.stringify(j.payload)}: ${j.last_error}`);
   console.log(`embedded ${(jobs ?? []).filter((j) => j.status === 'done').length}/${jobIds.length} documents`);
