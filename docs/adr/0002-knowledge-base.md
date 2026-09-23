@@ -31,3 +31,8 @@ and a way to prove retrieval works in English, Bangla and Banglish on the free t
   chunks until it retries. Acceptable at this scale.
 - Embedding calls are not yet counted in `provider_usage` / `ai_runs`; that arrives with
   `providers.ts` + `budget.ts` in Phase 2.
+
+## Result (2026-09-24)
+`pnpm kb check` with `gemini-embedding-001` @ 768d: **hit@1 10/10** (5 en, 3 bn, 2 Banglish).
+Top-1 similarities ranged **0.67–0.75**, i.e. mostly *below* the default `minSimilarity` 0.75.
+The gate threshold must be calibrated with the Phase 2 eval set, not left at the default.
