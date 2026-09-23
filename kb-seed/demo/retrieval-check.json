@@ -1,0 +1,12 @@
+[
+  { "q": "How much is delivery outside Dhaka?", "expect": "Delivery and payment (demo)", "lang": "en" },
+  { "q": "Do you have cash on delivery?", "expect": "Delivery and payment (demo)", "lang": "en" },
+  { "q": "Is the leather real?", "expect": "Products and materials (demo)", "lang": "en" },
+  { "q": "Can I wash the jute bag in a washing machine?", "expect": "Care instructions (demo)", "lang": "en" },
+  { "q": "I need 50 bags with our company logo for an event", "expect": "Custom and bulk orders (demo)", "lang": "en" },
+  { "q": "ঢাকার বাইরে ডেলিভারি চার্জ কত?", "expect": "Delivery and payment (demo)", "lang": "bn" },
+  { "q": "কী কী রং পাওয়া যায়?", "expect": "Products and materials (demo)", "lang": "bn" },
+  { "q": "ব্যাগ ছেঁড়া এসেছে, কী করব?", "expect": "Returns and damaged items (demo)", "lang": "bn" },
+  { "q": "bkash e payment kora jabe?", "expect": "Delivery and payment (demo)", "lang": "mixed" },
+  { "q": "bag bhije gele ki korbo?", "expect": "Care instructions (demo)", "lang": "mixed" }
+]

@@ -9,12 +9,15 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "db:types": "supabase gen types typescript --local --schema public > src/lib/database.types.ts"
+    "db:types": "supabase gen types typescript --local --schema public > src/lib/database.types.ts",
+    "kb": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/kb.mts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.77",
     "@base-ui/react": "^1.8.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.0",
+    "ai": "^7.0.111",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "lucide-react": "^1.47.0",
@@ -37,6 +40,7 @@
     "pg": "^8.23.0",
     "supabase": "^2.117.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.0.1"
   },

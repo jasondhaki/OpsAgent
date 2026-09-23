@@ -11,7 +11,7 @@ Budget: $0 (free tiers only).
 ## Progress
 
 - [x] Phase 0: foundation (Next.js, Supabase schema + RLS, CI)
-- [ ] Phase 1: knowledge base
+- [x] Phase 1: knowledge base (CLI; `/kb` UI ships with Phase 3 auth)
 - [ ] Phase 2: pipeline core + evals
 - [ ] Phase 3: dashboard
 - [ ] Phase 4: Gmail bridge + Telegram
@@ -32,3 +32,13 @@ Checks: `pnpm typecheck && pnpm lint && pnpm test` (DB tests need the local Supa
 After changing SQL: `pnpm exec supabase migration new <name>`, then `pnpm db:types`.
 
 Design decisions live in [`docs/adr/`](docs/adr).
+
+## Knowledge base
+
+```sh
+pnpm kb load demo kb-seed/demo          # fictional demo KB
+pnpm kb load jhunus-crafts kb-seed      # real templates; stay inactive until placeholders are filled
+pnpm kb check                           # 10-question retrieval check (needs GOOGLE_GENERATIVE_AI_API_KEY)
+pnpm kb query demo "delivery outside Dhaka?"
+```
+Add `--fake` to any command to run offline with the keyword embedder.

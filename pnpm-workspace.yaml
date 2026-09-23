@@ -2,3 +2,4 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
   supabase: true
+  esbuild: true
