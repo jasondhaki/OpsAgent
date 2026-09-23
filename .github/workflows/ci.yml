@@ -12,8 +12,8 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - name: Start local Postgres with migrations + seed
-        run: pnpm exec supabase db start
+      - name: Start local Supabase (DB + API) with migrations + seed
+        run: pnpm exec supabase start -x studio,imgproxy,inbucket,edge-runtime,logflare,vector,supavisor,realtime,storage-api
       - name: Generated types match SQL (rule 11)
         run: |
           pnpm db:types
