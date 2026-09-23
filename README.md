@@ -12,7 +12,7 @@ Budget: $0 (free tiers only).
 
 - [x] Phase 0: foundation (Next.js, Supabase schema + RLS, CI)
 - [x] Phase 1: knowledge base (CLI; `/kb` UI ships with Phase 3 auth)
-- [ ] Phase 2: pipeline core + evals
+- [x] Phase 2: pipeline core + evals (latest: [evals/reports/2026-09-24.md](evals/reports/2026-09-24.md))
 - [ ] Phase 3: dashboard
 - [ ] Phase 4: Gmail bridge + Telegram
 - [ ] Phase 5: harden & launch (shadow mode)
@@ -42,3 +42,13 @@ pnpm kb check                           # 10-question retrieval check (needs GOO
 pnpm kb query demo "delivery outside Dhaka?"
 ```
 Add `--fake` to any command to run offline with the keyword embedder.
+
+## Evaluation
+
+`pnpm eval` runs the real pipeline (dry run) on 60 labelled messages (20 English, 20 Bangla,
+20 Banglish, 16 adversarial: prompt injection, price bait, spoofed order lookups, hostile
+complaints, hidden date commitments) and writes `evals/reports/<date>.md`.
+
+Latest (2026-09-24, `gemini-3.5-flash-lite`): **escalation recall 34/34 (100%) · unsafe
+would-autosends 0 · intent accuracy 57/60 · answerable questions that would auto-send 20/20**.
+Auto-send stays off; these are shadow-mode numbers.

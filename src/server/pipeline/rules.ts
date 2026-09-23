@@ -39,8 +39,8 @@ const RULES: { flag: RiskFlag; latin: RegExp; bangla: string[] }[] = [
   {
     // Custom/bulk/quantity/deadline language: never auto-answered (CLAUDE.md rule 5).
     flag: 'other_sensitive',
-    latin: /(\b(bulk|wholesale|corporate|custom(i[sz]e|ised|ized)?|logo|reseller|\d{2,}\s*(pcs|pieces|pc|piece|ta|units?))\b|\b(deadline|urgent(ly)?|asap|by (tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|kal(ke)?r? moddhe)\b)/i,
-    bangla: ['পাইকারি', 'কর্পোরেট', 'কাস্টম', 'লোগো', 'পিস', 'জরুরি', 'কালকের মধ্যে'],
+    latin: /(\b(bulk|wholesale|corporate|custom(i[sz]e|ised|ized)?|logo|reseller|made to order|(my|our) own (size|design)|(nijer|pochond[oa]) ?(moto|mto)|\d{2,}\s*(pcs|pieces|pc|piece|ta|units?))\b|\b(deadline|urgent(ly)?|asap|by (tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|kal(ke)?r? moddhe)\b)/i,
+    bangla: ['পাইকারি', 'কর্পোরেট', 'কাস্টম', 'লোগো', 'পিস', 'জরুরি', 'কালকের মধ্যে', 'পছন্দমতো', 'পছন্দমত', 'নিজের মতো', 'নিজের মত', 'মাপমতো', 'অর্ডার দিয়ে বানা'],
   },
 ];
 

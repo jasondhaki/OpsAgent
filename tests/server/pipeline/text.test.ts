@@ -59,6 +59,9 @@ describe('ruleFlags', () => {
     ['বাটপার দোকান', 'abusive'],
     ['need 50 pcs with our logo', 'other_sensitive'],
     ['৫০ পিস লাগবে', 'other_sensitive'],
+    ['নিজের পছন্দমতো সাইজে বানিয়ে দেওয়া যাবে?', 'other_sensitive'],
+    ['nijer moto size e banano jabe?', 'other_sensitive'],
+    ['can you make it in my own size?', 'other_sensitive'],
     ['need it by Friday, urgent', 'other_sensitive'],
   ];
   it.each(cases)('%s → %s', (text, flag) => {
