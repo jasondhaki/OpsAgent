@@ -1,0 +1,10 @@
+{
+  "timeZone": "Asia/Dhaka",
+  "runtimeVersion": "V8",
+  "exceptionLogging": "STACKDRIVER",
+  "oauthScopes": [
+    "https://mail.google.com/",
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/userinfo.email"
+  ]
+}

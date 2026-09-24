@@ -13,10 +13,10 @@ import type { JobHandlers } from './runner';
 const EmbedPayload = z.object({ documentId: z.uuid() });
 const TicketPayload = z.object({ ticketId: z.uuid() });
 
-export type HandlerDeps = { db: Db; embedder: Embedder; llm?: Llm; orders?: OrderLookup };
+export type HandlerDeps = { db: Db; embedder: Embedder; llm?: Llm; orders?: OrderLookup; notify?: (ticketId: string) => Promise<void> };
 
 export function jobHandlers(deps: HandlerDeps): JobHandlers {
-  const { db, embedder, llm, orders } = deps;
+  const { db, embedder, llm, orders, notify } = deps;
   return {
     embed_document: async (job) => {
       await embedDocument(db, embedder, EmbedPayload.parse(job.payload).documentId);
@@ -25,7 +25,7 @@ export function jobHandlers(deps: HandlerDeps): JobHandlers {
       if (!llm || !orders) throw new Error('process_ticket needs llm + orders deps');
       const { ticketId } = TicketPayload.parse(job.payload);
       try {
-        const res = await processTicket({ db, llm, embedder, orders }, ticketId, { deadlineMs: Date.now() + 8_000 });
+        const res = await processTicket({ db, llm, embedder, orders, notify }, ticketId, { deadlineMs: Date.now() + 8_000 });
         if (res.outcome === 'deferred') await enqueueJob(db, { orgId: job.org_id, type: 'process_ticket', payload: { ticketId } });
       } catch (e) {
         // Last attempt: make the failure visible in the queue instead of silently dead-lettering.

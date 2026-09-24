@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { admin, ensureUser, seedReviewTicket, signIn } from './helpers';
 
-const ORG = 'jhunus-crafts';
+const ORG = 'e2e-test'; // never the real tenant
 const OWNER = 'e2e-owner@example.com';
 const OUTSIDER = 'e2e-outsider@example.com';
 

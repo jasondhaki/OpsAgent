@@ -1,0 +1,23 @@
+name: Tick backup
+# Backup scheduler: if the Gmail bridge trigger stops, jobs still run and Supabase stays awake.
+# Needs repo secrets OPSAGENT_BASE_URL (deployed app URL) and CRON_SECRET; skips quietly until both exist.
+on:
+  schedule: [{ cron: '*/15 * * * *' }]
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Signed POST /api/bridge/tick
+        env:
+          BASE: ${{ secrets.OPSAGENT_BASE_URL }}
+          SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$BASE" ] || [ -z "$SECRET" ]; then echo "Not configured yet; skipping."; exit 0; fi
+          ts=$(date +%s); body='{}'
+          sig=$(printf '%s.%s' "$ts" "$body" | openssl dgst -sha256 -hmac "$SECRET" -hex | sed 's/^.* //')
+          curl -fsS --max-time 60 -X POST "${BASE%/}/api/bridge/tick" \
+            -H 'content-type: application/json' -H "X-OpsAgent-Timestamp: $ts" -H "X-OpsAgent-Signature: $sig" \
+            --data "$body"

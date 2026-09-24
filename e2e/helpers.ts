@@ -17,11 +17,17 @@ const PASSWORD = 'E2e-local-only-pw-1!';
 export async function ensureUser(email: string, orgSlug?: string, role: 'owner' | 'reviewer' | 'viewer' = 'owner') {
   const created = await admin.auth.admin.createUser({ email, password: PASSWORD, email_confirm: true });
   const id = created.data.user?.id ?? (await admin.auth.admin.listUsers({ perPage: 1000 })).data.users.find((u) => u.email === email)!.id;
-  if (orgSlug) {
-    const { data: org } = await admin.from('orgs').select('id').eq('slug', orgSlug).single();
-    await admin.from('org_members').upsert({ org_id: org!.id, user_id: id, role });
-  }
+  // Test users belong to exactly one org, so the dashboard's org pick is deterministic.
+  await admin.from('org_members').delete().eq('user_id', id);
+  if (orgSlug) await admin.from('org_members').insert({ org_id: await ensureOrg(orgSlug), user_id: id, role });
   return id;
+}
+
+/** A dedicated, non-demo org for browser tests: never the real tenant, so a bridge pointed at a dev DB can't send test replies. */
+export async function ensureOrg(slug: string): Promise<string> {
+  const { data, error } = await admin.from('orgs').upsert({ slug, name: 'E2E Test Shop' }, { onConflict: 'slug' }).select('id').single();
+  if (error) throw error;
+  return data.id;
 }
 
 /** Sign in with a password and copy the @supabase/ssr session cookies into the browser context. */
@@ -37,8 +43,7 @@ export async function signIn(context: BrowserContext, email: string) {
 
 /** An email ticket parked in needs_review with one AI draft, as the pipeline would leave it. */
 export async function seedReviewTicket(orgSlug: string, subject: string) {
-  const { data: org } = await admin.from('orgs').select('id').eq('slug', orgSlug).single();
-  const orgId = org!.id;
+  const orgId = await ensureOrg(orgSlug);
   const { data: cust } = await admin.from('customers').upsert({ org_id: orgId, email: 'rina.demo@example.com' }, { onConflict: 'org_id,email' }).select('id').single();
   const { data: t, error } = await admin
     .from('tickets')
