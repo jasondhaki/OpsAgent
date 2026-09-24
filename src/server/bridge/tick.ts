@@ -20,7 +20,8 @@ export async function tick(deps: HandlerDeps, orgId: string, source: 'bridge' | 
   } catch (e) {
     console.warn({ msg: 'remind_failed', error: e instanceof Error ? e.message.slice(0, 200) : 'unknown' });
   }
-  const { ran } = await runJobs(db, jobHandlers(deps), { budgetMs, batch: 3, leaseSeconds: 60 });
+  // One job per claim: the budget is checked between jobs, and a claimed-but-unstarted job would sit leased for 60 s.
+  const { ran } = await runJobs(db, jobHandlers(deps), { budgetMs, batch: 1, leaseSeconds: 60 });
   return { ran, reaped, reminded };
 }
 

@@ -4,6 +4,10 @@ The bridge is a small Google Apps Script that runs **inside the Gmail account** 
 OpsAgent over signed HTTPS. No domain, no paid email service. Test it with a **throwaway test
 Gmail first**, and only then install it in the business Gmail.
 
+> ⚠️ **The script reads the whole inbox of the account it runs in.** On its first run it ingests
+> the last 2 days of mail. Never install it in a personal account: use a brand-new test Gmail
+> for testing, and only the business Gmail for production.
+
 ## 0. You need a public URL
 
 Apps Script runs on Google's servers, so it can't reach `localhost`.
