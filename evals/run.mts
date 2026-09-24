@@ -41,7 +41,7 @@ if (!org) throw new Error('demo org missing (supabase db reset?)');
 const { count } = await db.from('kb_chunks').select('id', { count: 'exact', head: true }).eq('org_id', org.id);
 if (!count) throw new Error('demo KB not embedded: run `pnpm kb load demo kb-seed/demo`');
 
-const deps = { db, llm: createLlm(db), embedder: geminiEmbedder(), orders: mockOrders };
+const deps = { db, llm: createLlm(db), embedder: geminiEmbedder(db), orders: mockOrders };
 const runId = new Date().toISOString().replace(/[:.]/g, '-');
 
 type Row = {

@@ -16,7 +16,7 @@ import { searchKb } from '@/server/pipeline/retrieve';
 
 const fake = process.argv.includes('--fake');
 const [cmd, ...args] = process.argv.slice(2).filter((a) => a !== '--fake');
-const embedder = fake ? fakeEmbedder() : geminiEmbedder();
+const embedder = fake ? fakeEmbedder() : geminiEmbedder(db);
 
 type Kind = 'faq' | 'policy' | 'product' | 'care' | 'approved_answer';
 type Lang = 'bn' | 'en' | 'mixed';
