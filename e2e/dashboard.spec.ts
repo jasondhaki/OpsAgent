@@ -107,3 +107,48 @@ test('simulator: real pipeline dry run → ticket in queue → approve records a
   const { data: outbox } = await admin.from('outbox').select('status').eq('ticket_id', ticketId);
   expect(outbox).toEqual([{ status: 'cancelled' }]);
 });
+
+test.describe('public demo (no login)', () => {
+  test('landing page, Turnstile-gated run, and a response even without live AI', async ({ page }) => {
+    await page.goto('/demo');
+    await expect(page).toHaveURL(/\/demo$/); // not bounced to /login
+    await expect(page.getByRole('heading', { name: /knows when to stop/ })).toBeVisible();
+    await page.getByRole('button', { name: 'Angry' }).click();
+    const run = page.getByRole('button', { name: 'Run the agent (dry run)' });
+    await expect(run).toBeEnabled({ timeout: 30_000 }); // Turnstile (test key) issued a token
+    await run.click();
+    // Live trace, recorded replay, or "unavailable" (CI has no AI keys) — never a bot-check failure.
+    const trace = page.getByRole('region', { name: 'Pipeline trace' });
+    await expect(trace.getByText(/Open ticket|recorded|No recorded run/).first()).toBeVisible({ timeout: 60_000 });
+    await expect(page.getByText('Bot check failed')).toHaveCount(0);
+  });
+
+  test('demo tickets are read-only', async ({ page }) => {
+    const { data: demo } = await admin.from('orgs').select('id').eq('slug', 'demo').single();
+    // channel 'simulator': visitor-style tickets are never listed on the public page.
+    const { data: t } = await admin
+      .from('tickets')
+      .insert({ org_id: demo!.id, channel: 'simulator', subject: `Demo readonly ${Date.now()}`, status: 'needs_review', gate: { wouldAutosend: false, autosend: false, score: 0, checks: [{ id: 'no_risk_flags', passed: false }] } })
+      .select('id')
+      .single();
+    await page.goto(`/demo/tickets/${t!.id}`);
+    await expect(page.getByRole('list', { name: 'Gate checks' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Approve/ })).toHaveCount(0);
+  });
+
+  test('a non-demo ticket id is not viewable through /demo', async ({ page }) => {
+    const { ticketId } = await seedReviewTicket(ORG, `Private ${Date.now()}`);
+    await page.goto(`/demo/tickets/${ticketId}`);
+    await expect(page.getByText('The strap came torn')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Not found' })).toBeVisible();
+  });
+});
+
+test('insights and leads render for the owner', async ({ page, context }) => {
+  await signIn(context, OWNER);
+  await page.goto('/insights');
+  await expect(page.getByRole('heading', { name: 'Insights' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Headline metrics' })).toBeVisible();
+  await page.goto('/leads');
+  await expect(page.getByRole('heading', { name: 'Leads' })).toBeVisible();
+});

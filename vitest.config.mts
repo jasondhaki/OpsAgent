@@ -11,6 +11,7 @@ export default defineConfig({
   },
   test: {
     include: ['tests/**/*.test.ts'],
+    testTimeout: 15_000, // DB tests hit the local Supabase stack in parallel; 5 s flakes under load
     // Placeholders so modules importing env.ts load. Tests build their own local clients, and no
     // real keys (Telegram, AI) are ever set here, so those integrations stay no-ops (rule 9).
     env: { NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test', SUPABASE_SERVICE_ROLE_KEY: 'test' },

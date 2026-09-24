@@ -7,6 +7,7 @@ import { db } from '@/server/db/admin';
 import { createInbound } from '@/server/db/repos/tickets';
 import { pipelineDeps } from '@/server/deps';
 import { processTicket, type ProcessResult } from '@/server/pipeline/orchestrator';
+import { allow } from '@/server/security/rateLimit';
 
 export type SimState = { ok: true; ticketId: string; result: ProcessResult; ms: number } | { ok: false; error: string } | null;
 
@@ -23,6 +24,8 @@ export async function simulateAction(_: SimState, form: FormData): Promise<SimSt
   const m = await requireMember(m0.orgId, 'reviewer');
   const parsed = Input.safeParse({ from: form.get('from'), subject: form.get('subject') ?? '', body: form.get('body') ?? '' });
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Invalid input.' };
+  // Protects the shared free-tier AI quota from a stuck finger or a script.
+  if (!(await allow(db, `sim:user:${m.userId}`, 86_400, 50))) return { ok: false, error: 'Simulator limit reached (50 runs/day).' };
   const started = Date.now();
   const t = await createInbound(db, { orgId: m.orgId, channel: 'simulator', fromEmail: parsed.data.from, subject: parsed.data.subject || null, body: parsed.data.body });
   const result = await processTicket(pipelineDeps(), t.ticketId, { dryRun: true, deadlineMs: Date.now() + 60_000 });
