@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import type { OrgSettings } from '@/lib/contracts';
+import { submitKeepingValues } from '@/lib/form';
 import { humanize } from '@/lib/format';
 import { saveSettingsAction } from './actions';
 
@@ -22,7 +23,7 @@ export function SettingsForm({ settings, stats, canEdit }: { settings: OrgSettin
   }, [state]);
 
   return (
-    <form action={save} className="space-y-6">
+    <form onSubmit={submitKeepingValues(save)} className="space-y-6">
       <fieldset disabled={!canEdit || pending} className="space-y-6">
         <section className="space-y-3 rounded-xl border p-4">
           <h2 className="font-semibold">Auto-send</h2>

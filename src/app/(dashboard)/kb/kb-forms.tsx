@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { submitKeepingValues } from '@/lib/form';
 import { findPlaceholders } from '@/lib/placeholders';
 import { reembedAction, saveDocAction, type KbState } from './actions';
 
@@ -31,7 +32,7 @@ export function DocEditor({ doc }: { doc: Doc }) {
   const left = findPlaceholders(content);
 
   return (
-    <form action={save} className="space-y-3 rounded-xl border p-4">
+    <form onSubmit={submitKeepingValues(save)} className="space-y-3 rounded-xl border p-4">
       {doc && <input type="hidden" name="id" value={doc.id} />}
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="space-y-1 sm:col-span-3">

@@ -40,7 +40,13 @@ export function ReviewPanel(p: { ticketId: string; draftId: string | null; draft
             <input type="hidden" name="draftId" value={p.draftId} />
             <Button type="submit" disabled={approving}>{approving ? 'Approving…' : 'Approve as is'}</Button>
           </form>
-          <Sheet open={open} onOpenChange={setOpen}>
+          <Sheet
+            open={open}
+            onOpenChange={(o) => {
+              if (o) setBody(p.draftBody); // start from the latest draft each time the drawer opens
+              setOpen(o);
+            }}
+          >
             <SheetTrigger render={<Button variant="outline">Edit & approve</Button>} />
             <SheetContent side="right" className="w-full sm:max-w-lg">
               <form action={approve} className="flex h-full flex-col">

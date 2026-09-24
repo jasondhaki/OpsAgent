@@ -85,7 +85,6 @@ export default async function TicketPage({ params }: PageProps<'/tickets/[id]'>)
             <CardContent className="space-y-4">
               {latest ? <p className="whitespace-pre-wrap rounded-lg border p-3 text-sm">{latest.body}</p> : <p className="text-sm text-muted-foreground">No draft (AI unavailable, spam, or still processing). You can reply manually.</p>}
               <ReviewPanel
-                key={latest?.id ?? 'none'}
                 ticketId={t.id}
                 draftId={latest?.id ?? null}
                 draftBody={latest?.body ?? ''}
