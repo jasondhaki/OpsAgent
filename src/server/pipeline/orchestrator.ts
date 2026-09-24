@@ -53,7 +53,11 @@ type Ctx = {
 export async function processTicket(
   deps: PipelineDeps,
   ticketId: string,
-  { dryRun = false, deadlineMs = Date.now() + 25_000 }: { dryRun?: boolean; deadlineMs?: number } = {},
+  {
+    dryRun = false,
+    deadlineMs = Date.now() + 25_000,
+    reviewerInstruction = null,
+  }: { dryRun?: boolean; deadlineMs?: number; reviewerInstruction?: string | null } = {},
 ): Promise<ProcessResult> {
   const { db, llm } = deps;
   const trace: TraceStep[] = [];
@@ -170,6 +174,7 @@ export async function processTicket(
           intentGuidance: INTENT_GUIDANCE[cls.intent] ?? INTENT_GUIDANCE.other,
           signature: settings.signature,
           allowedUrls,
+          reviewerInstruction,
           orgId: org.id,
           ticketId,
         }),

@@ -28,6 +28,8 @@ export type DraftPromptInput = {
   intentGuidance: string;
   signature: string;
   allowedUrls: string[];
+  /** From a signed-in reviewer on Regenerate (trusted). Absent ⇒ prompt is byte-identical to the evaluated draft.v1. */
+  reviewerInstruction?: string | null;
 };
 
 export function draftPrompt(i: DraftPromptInput): string {
@@ -53,7 +55,14 @@ ${i.facts ? JSON.stringify(i.facts, null, 2) : '(none)'}
 
 <allowed_urls>${i.allowedUrls.join(' ') || '(none)'}</allowed_urls>
 <reply_language>${lang}</reply_language>
-<signature>${i.signature}</signature>`;
+<signature>${i.signature}</signature>${
+    i.reviewerInstruction ? `
+
+<reviewer_instruction>
+From the business owner (trusted). Follow it, but every rule above still applies:
+${i.reviewerInstruction}
+</reviewer_instruction>` : ''
+  }`;
 }
 
 export const INTENT_GUIDANCE: Record<string, string> = {

@@ -13,7 +13,7 @@ Budget: $0 (free tiers only).
 - [x] Phase 0: foundation (Next.js, Supabase schema + RLS, CI)
 - [x] Phase 1: knowledge base (CLI; `/kb` UI ships with Phase 3 auth)
 - [x] Phase 2: pipeline core + evals (latest: [evals/reports/2026-09-24.md](evals/reports/2026-09-24.md))
-- [ ] Phase 3: dashboard
+- [x] Phase 3: dashboard (Google login, queue, ticket review with gate checklist, simulator, settings, KB). Browser smoke tests: `pnpm e2e` (add `E2E_REAL_LLM=1` to include a real simulator run)
 - [ ] Phase 4: Gmail bridge + Telegram
 - [ ] Phase 5: harden & launch (shadow mode)
 
@@ -32,6 +32,17 @@ Checks: `pnpm typecheck && pnpm lint && pnpm test` (DB tests need the local Supa
 After changing SQL: `pnpm exec supabase migration new <name>`, then `pnpm db:types`.
 
 Design decisions live in [`docs/adr/`](docs/adr).
+
+## Dashboard login (local)
+
+Admin login is Google OAuth plus the `org_members` allowlist.
+1. In Google Cloud, create an OAuth client (Web). Authorised redirect URI: `http://127.0.0.1:54321/auth/v1/callback`.
+2. Export `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` and `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` in your shell, then `pnpm exec supabase start`.
+3. Sign in once at `/login` (you will see "No access"), then add yourself:
+   `insert into org_members (org_id, user_id, role) select o.id, u.id, 'owner' from orgs o, auth.users u where o.slug = 'jhunus-crafts' and u.email = '<you>';`
+
+Simulator tickets land in the queue like real ones; approving one records an outbox row with
+status `cancelled`, so nothing from the simulator can ever be sent.
 
 ## Knowledge base
 
