@@ -17,7 +17,14 @@ import { RAG_INTENTS, validateDraft } from './validate';
 import { checkGroundedness } from './groundedness';
 import { evaluateGate } from './gate';
 
-export type PipelineDeps = { db: Db; llm: Llm; embedder: Embedder; orders: OrderLookup };
+export type PipelineDeps = {
+  db: Db;
+  llm: Llm;
+  embedder: Embedder;
+  orders: OrderLookup;
+  /** Tell reviewers a ticket is waiting (Telegram). Never called on dry runs; failures never fail the pipeline. */
+  notify?: (ticketId: string) => Promise<void>;
+};
 export type TraceStep = { step: string; ms: number; data: unknown };
 export type ProcessResult = {
   outcome: 'needs_review' | 'approved' | 'closed' | 'deferred';
@@ -82,8 +89,17 @@ export async function processTicket(
     const { error: e } = await db.from('tickets').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', ticketId);
     if (e) throw e;
   };
+  const notifyReviewers = async () => {
+    if (dryRun || !deps.notify) return;
+    try {
+      await deps.notify(ticketId);
+    } catch (e) {
+      console.warn({ msg: 'notify_failed', ticketId, error: e instanceof Error ? e.message.slice(0, 200) : 'unknown' });
+    }
+  };
   const toReview = async (reason: string, extra: TicketUpdate = {}): Promise<ProcessResult> => {
     await setTicket({ status: 'needs_review', requires_human: true, ...extra });
+    await notifyReviewers();
     return { outcome: 'needs_review', reason, trace };
   };
   const overBudget = () => Date.now() > deadlineMs;
@@ -277,8 +293,8 @@ export async function processTicket(
     await ev('autosent', { draftId: draftRow.id });
     return { ...result, outcome: 'approved' };
   }
-  // ponytail: reviewer notification (Telegram) lands in Phase 4.
   await setTicket({ status: 'needs_review', requires_human: true, gate: gate as Json, pipeline_step: 'gated' });
+  await notifyReviewers();
   return { ...result, outcome: 'needs_review' };
 }
 

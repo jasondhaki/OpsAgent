@@ -11,3 +11,5 @@ export function age(iso: string, now = Date.now()): string {
 }
 
 export const humanize = (s: string) => s.replaceAll('_', ' ');
+
+export const minutesSince = (iso: string, now = Date.now()) => (now - new Date(iso).getTime()) / 60_000;

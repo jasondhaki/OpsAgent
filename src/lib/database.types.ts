@@ -72,6 +72,32 @@ export type Database = {
           },
         ]
       }
+      bridge_heartbeats: {
+        Row: {
+          last_seen_at: string
+          org_id: string
+          source: string
+        }
+        Insert: {
+          last_seen_at?: string
+          org_id: string
+          source: string
+        }
+        Update: {
+          last_seen_at?: string
+          org_id?: string
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bridge_heartbeats_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: true
+            referencedRelation: "orgs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           created_at: string
@@ -749,6 +775,32 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "jobs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      claim_outbox: {
+        Args: { p_lease_seconds: number; p_limit: number; p_org_id: string }
+        Returns: {
+          attempts: number
+          body: string
+          claimed_until: string | null
+          created_at: string
+          draft_id: string
+          id: string
+          last_error: string | null
+          org_id: string
+          reply_to_provider_message_id: string | null
+          sent_at: string | null
+          sent_ref: string | null
+          status: Database["public"]["Enums"]["outbox_status"]
+          subject: string | null
+          ticket_id: string
+          to_address: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "outbox"
           isOneToOne: false
           isSetofReturn: true
         }
