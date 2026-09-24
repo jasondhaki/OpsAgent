@@ -14,7 +14,6 @@ export interface Embedder {
 
 /** Gemini embeddings, counted against DAILY_CAP_GOOGLE and logged to ai_runs (step 'embed'). Throws on failure; job retries handle it. */
 export function geminiEmbedder(db: Db): Embedder {
-  if (!env.GOOGLE_GENERATIVE_AI_API_KEY) throw new Error('GOOGLE_GENERATIVE_AI_API_KEY is not set');
   const model = env.EMBEDDING_MODEL;
   const log = (ok: boolean, error: string | null, latencyMs: number, inputTokens?: number) =>
     db.from('ai_runs').insert({
@@ -29,6 +28,7 @@ export function geminiEmbedder(db: Db): Embedder {
   return {
     model,
     async embed(texts, task) {
+      if (!env.GOOGLE_GENERATIVE_AI_API_KEY) throw new Error('GOOGLE_GENERATIVE_AI_API_KEY is not set');
       if (!(await hasBudget(db, 'google', model, env.DAILY_CAP_GOOGLE))) throw new Error(`google ${model}: no embedding budget`);
       // ponytail: counts one request per embed() call; embedMany may split very large batches into several API calls.
       await recordRequest(db, 'google', model);
