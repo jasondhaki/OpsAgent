@@ -37,7 +37,8 @@ describe('ingest', () => {
     const p = payload();
     const first = await ingestEmail(db, org, p);
     expect(first.status).toBe('queued');
-    expect(await jobsFor(first.ticketId!)).toEqual([{ type: 'process_ticket', status: 'queued' }]);
+    // Status may already be running/done: the tick test in a parallel file claims jobs from any org.
+    expect((await jobsFor(first.ticketId!)).map((j) => j.type)).toEqual(['process_ticket']);
     const again = await ingestEmail(db, org, p);
     expect(again).toEqual({ status: 'duplicate', ticketId: first.ticketId });
     expect((await db.from('messages').select('id').eq('ticket_id', first.ticketId!)).data).toHaveLength(1);

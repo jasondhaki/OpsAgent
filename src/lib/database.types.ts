@@ -133,6 +133,35 @@ export type Database = {
           },
         ]
       }
+      demo_traces: {
+        Row: {
+          result: Json
+          sample_key: string
+          ticket_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          result: Json
+          sample_key: string
+          ticket_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          result?: Json
+          sample_key?: string
+          ticket_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demo_traces_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       drafts: {
         Row: {
           author: string
@@ -680,6 +709,7 @@ export type Database = {
           language: string | null
           last_message_at: string
           lead: Json | null
+          lead_status: string | null
           org_id: string
           pipeline_step: string | null
           requires_human: boolean
@@ -702,6 +732,7 @@ export type Database = {
           language?: string | null
           last_message_at?: string
           lead?: Json | null
+          lead_status?: string | null
           org_id: string
           pipeline_step?: string | null
           requires_human?: boolean
@@ -724,6 +755,7 @@ export type Database = {
           language?: string | null
           last_message_at?: string
           lead?: Json | null
+          lead_status?: string | null
           org_id?: string
           pipeline_step?: string | null
           requires_human?: boolean

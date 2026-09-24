@@ -6,6 +6,8 @@ import { signOut } from './actions';
 
 const NAV = [
   { href: '/queue', label: 'Queue' },
+  { href: '/leads', label: 'Leads' },
+  { href: '/insights', label: 'Insights' },
   { href: '/simulator', label: 'Simulator' },
   { href: '/kb', label: 'Knowledge base' },
   { href: '/settings', label: 'Settings' },

@@ -12,7 +12,8 @@
     "e2e": "playwright test",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/database.types.ts",
     "kb": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/kb.mts",
-    "eval": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx evals/run.mts"
+    "eval": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx evals/run.mts",
+    "demo:seed": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/demo-seed.mts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.77",
