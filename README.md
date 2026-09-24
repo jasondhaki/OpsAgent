@@ -13,7 +13,7 @@ Budget: $0 (free tiers only).
 - [x] Phase 0: foundation (Next.js, Supabase schema + RLS, CI)
 - [x] Phase 1: knowledge base (CLI; `/kb` UI ships with Phase 3 auth)
 - [x] Phase 2: pipeline core + evals (latest: [evals/reports/2026-09-24.md](evals/reports/2026-09-24.md))
-- [x] Phase 3: dashboard (Google login, queue, ticket review with gate checklist, simulator, settings, KB)
+- [x] Phase 3: dashboard (Google login, queue, ticket review with gate checklist, simulator, settings, KB). Browser smoke tests: `pnpm e2e` (add `E2E_REAL_LLM=1` to include a real simulator run)
 - [ ] Phase 4: Gmail bridge + Telegram
 - [ ] Phase 5: harden & launch (shadow mode)
 
